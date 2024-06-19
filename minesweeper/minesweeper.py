@@ -1,4 +1,4 @@
-from minesweeper.map import *
+from minesweeper.game import *
 
 
 def get_row_col_input() -> Tuple[int,int]:
@@ -11,18 +11,16 @@ def play():
     rows = int(input("How many rows?"))
     cols = int(input("How many cols?"))
 
-    user_map = generate_user_view(rows, cols)
-
     row, col = get_row_col_input()
 
-    mine_map = generate_mine_map(row, col, rows, cols, .5, 100)
+    game = Game(row, col, rows, cols, .5, 100)
 
-    while not reveal_tile(row, col, user_map, mine_map) and not check_win(user_map, mine_map):
-        print(create_map_output(user_map))        
+    while not game.reveal_tile(row, col) and not game.did_user_win():
+        game.print_board()
         row, col = get_row_col_input()
-
-    if check_win(user_map, mine_map):
+    
+    if game.did_user_win():
         print("YOU WIN!")
 
-    reveal_hidden_mines(user_map, mine_map)
-    print(create_map_output(user_map))
+    game.reveal_hidden_mines()
+    game.print_board()
